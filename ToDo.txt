@@ -3,3 +3,8 @@ api-ms-win-core-libraryloader-l1-2-0.dll missing windows 7
 .
 api-ms-win-core-shlwapi-legacy-l1-1-0.dll
 api-ms-win-core-heap-l2-1-0.dll win7
+
+
+
+Main Board (Manufacturer)	SIEMENS AG
+Main Board (Model)	A5E34736460 RS-AG (Max: 2 slot RAM)
