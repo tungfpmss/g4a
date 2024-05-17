@@ -3,3 +3,30 @@ api-ms-win-core-libraryloader-l1-2-0.dll missing windows 7
 .
 api-ms-win-core-shlwapi-legacy-l1-1-0.dll
 api-ms-win-core-heap-l2-1-0.dll win7
+
+
+
+No.	Đồ	Định lượng	Giá dự kiến	
+1	Tôm	2kg	600	
+2	Ba chỉ lợn	2kg	300	
+3	Mực mai	1.5kg (1 con)	300	
+4	Dạ dày lợn	2kg	400	
+5	Mỳ tôm cốc	12 cốc	150	
+6	XX ăn liền	15 cái (3 túi)	120	
+7	Kim chi	1 hộp	30	
+8	Xà lách	1kg	30	
+9	Rau mùi	2 mớ	10	
+10	Dưa chuột	2kg 	20	
+11	Quất + Ớt		20	
+12	Muối chấm HH	1 lọ	20	
+13	Sốt ướp nướng	5 gói	75	
+14	Tương ớt nhỏ	1 chai	20	
+15	Giấy ăn	2 bịch	40	
+16	Que tre xiên thịt	1 túi	10	
+17	Mận	1kg	40	
+18	Dưa hấu	3kg ~1 quả	45	
+19	Chôm chôm	2kg	90	
+20	Nước lọc 500ml	1 thùng 	100	
+21	Coca + nước cam	12 lon	150	
+22	Rượu Soju	5 chai	300	Done
+			2870	
