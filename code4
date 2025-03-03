@@ -1,0 +1,76 @@
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TcpProxy
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int proxyPort = 8888; // Port on which the proxy will listen
+            string serverIp = "127.0.0.1"; // Destination server IP
+            int serverPort = 17; // Destination server port
+
+            StartProxy(proxyPort, serverIp, serverPort);
+        }
+
+        static void StartProxy(int proxyPort, string serverIp, int serverPort)
+        {
+            TcpListener listener = new TcpListener(IPAddress.Any, proxyPort);
+            listener.Start();
+            Console.WriteLine($"Proxy started on port {proxyPort}, forwarding to {serverIp}:{serverPort}");
+
+            while (true)
+            {
+                TcpClient client = listener.AcceptTcpClient();
+                Task.Run(() => HandleClient(client, serverIp, serverPort));
+            }
+        }
+
+        static void HandleClient(TcpClient client, string serverIp, int serverPort)
+        {
+            try
+            {
+                using (client)
+                using (NetworkStream clientStream = client.GetStream())
+                using (TcpClient serverClient = new TcpClient(serverIp, serverPort))
+                using (NetworkStream serverStream = serverClient.GetStream())
+                {
+                    // Forward data from client to server
+                    Task clientToServer = Task.Run(() => ForwardData(clientStream, serverStream));
+
+                    // Forward data from server to client
+                    Task serverToClient = Task.Run(() => ForwardData(serverStream, clientStream));
+
+                    Task.WaitAll(clientToServer, serverToClient);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error handling client: {ex.Message}");
+            }
+        }
+
+        static void ForwardData(NetworkStream input, NetworkStream output)
+        {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            try
+            {
+                while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    output.Write(buffer, 0, bytesRead);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error forwarding data: {ex.Message}");
+            }
+        }
+    }
+}
