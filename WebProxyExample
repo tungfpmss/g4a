@@ -1,0 +1,29 @@
+using System;
+using System.Net;
+
+class Program
+{
+    static void Main()
+    {
+        // Tạo URL cho WebProxy
+        string proxyUrl = "http://proxyserver:8080";
+
+        // Tạo đối tượng WebProxy
+        WebProxy proxy = new WebProxy(proxyUrl);
+
+        // Thiết lập thông tin đăng nhập cho WebProxy
+        string username = "proxyUsername";
+        string password = "proxyPassword";
+        proxy.Credentials = new NetworkCredential(username, password);
+
+        // Sử dụng proxy cho các yêu cầu web
+        WebRequest request = WebRequest.Create("http://example.com");
+        request.Proxy = proxy;
+
+        // Gửi yêu cầu và nhận phản hồi
+        using (WebResponse response = request.GetResponse())
+        {
+            Console.WriteLine("Response received from the web server.");
+        }
+    }
+}
