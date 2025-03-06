@@ -1,0 +1,39 @@
+using System;
+using System.Drawing;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+
+namespace TcpImageClient
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string imagePath = "path_to_your_image.jpg";
+            string proxyUrl = "http://proxyserver:8080";
+            string proxyUser = "username";
+            string proxyPassword = "password";
+
+            SendImage(imagePath, proxyUrl, proxyUser, proxyPassword);
+        }
+
+        static void SendImage(string imagePath, string proxyUrl, string proxyUser, string proxyPassword)
+        {
+            WebProxy proxy = new WebProxy(proxyUrl)
+            {
+                Credentials = new NetworkCredential(proxyUser, proxyPassword)
+            };
+
+            WebRequest.DefaultWebProxy = proxy;
+
+            using (TcpClient client = new TcpClient("server_address", 5000))
+            using (NetworkStream stream = client.GetStream())
+            using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+            {
+                fs.CopyTo(stream);
+                Console.WriteLine("Image sent.");
+            }
+        }
+    }
+}
