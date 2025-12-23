@@ -1,0 +1,118 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace WindowsFormsApp2
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void SendImage(string imagePath, string proxyIp, int proxyPort, string serverIp, int serverPort)
+        {
+            try
+            {
+                // Load the image
+                Image image = Image.FromFile(imagePath);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    // Convert the image to a byte array
+                    image.Save(ms, image.RawFormat);
+                    byte[] imageBytes = ms.ToArray();
+
+                    // Establish a TCP connection to the proxy
+                    using (TcpClient proxyClient = new TcpClient(proxyIp, proxyPort))
+                    using (NetworkStream proxyStream = proxyClient.GetStream())
+                    {
+                        // Send the destination server information to the proxy
+                        byte[] serverInfo = Encoding.UTF8.GetBytes($"{serverIp}:{serverPort}\n");
+                        proxyStream.Write(serverInfo, 0, serverInfo.Length);
+
+                        // Send the image byte array through the proxy
+                        proxyStream.Write(imageBytes, 0, imageBytes.Length);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error sending image: {ex.Message}");
+            }
+        }
+
+        private void ReceiveImage(int proxyPort)
+        {
+            while (true)
+            {
+                try
+                {
+                    // Start listening for incoming connections
+                    TcpListener listener = new TcpListener(IPAddress.Any, proxyPort);
+                    listener.Start();
+
+                    // Accept an incoming connection
+                    using (TcpClient client = listener.AcceptTcpClient())
+                    using (NetworkStream stream = client.GetStream())
+                    {
+                        // Read the image byte array from the network stream
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            stream.CopyTo(ms);
+                            byte[] imageBytes = ms.ToArray();
+
+                            // Convert the byte array back to an image
+                            using (MemoryStream imageStream = new MemoryStream(imageBytes))
+                            {
+                                Image receivedImage = Image.FromStream(imageStream);
+                                // Display the received image (for example, in a PictureBox)
+                                pictureBox1.Image = receivedImage;
+                            }
+                        }
+                    }
+
+                    listener.Stop();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error receiving image: {ex.Message}");
+                }
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            backgroundWorker1.RunWorkerAsync();
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            ReceiveImage(17);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SendImage(@"F:\tkb.jpg", "127.0.0.1", 8888, "127.0.0.1", 17);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SendImage(@"F:\dam1.jpg", "127.0.0.1", 8888, "127.0.0.1", 17);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SendImage(@"F:\dam2.jpg", "127.0.0.1", 8888, "127.0.0.1", 17);
+        }
+    }
+}
