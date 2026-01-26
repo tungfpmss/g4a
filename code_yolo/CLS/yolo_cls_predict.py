@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # for f in os.listdir(test_dir):
     #     results = model.predict(source=f, save=True, conf=0.5)
 
-    results = model.predict(source=test_dir, conf=0.25)
+    results = model.predict(source=test_dir, conf=0.25, save=True)
 
     for result in results:
         # Lấy tên các class
