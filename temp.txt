@@ -1,0 +1,25 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow
+# Import class giao diện từ file .py vừa convert
+from main_window import Ui_MainWindow 
+
+class MyApplication(QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        # Thiết lập giao diện từ class đã import
+        self.setupUi(self)
+        
+        # --- KẾT NỐI LOGIC TẠI ĐÂY ---
+        # Giả sử trong Designer bạn đặt objectName của nút là 'btn_hello'
+        # và nhãn là 'lbl_status'
+        self.btn_hello.clicked.connect(self.say_hello)
+
+    def say_hello(self):
+        self.lbl_status.setText("Chào bạn! Logic đã hoạt động!")
+        print("Người dùng đã nhấn nút!")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MyApplication()
+    window.show()
+    sys.exit(app.exec_())
